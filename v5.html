@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewAppStore v1.5</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top right, #1a1c29, #0e1017);
+            color: #f3f4f6;
+            min-height: 100vh;
+        }
+        /* Premium Glassmorphism */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+        .glass-nav {
+            background: rgba(14, 16, 23, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-premium {
+            background: linear-gradient(135deg, #22c55e, #15803d);
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
+        }
+        .btn-update {
+            background: linear-gradient(135deg, #eab308, #ca8a04);
+            box-shadow: 0 4px 15px rgba(234, 179, 8, 0.3);
+        }
+    </style>
+</head>
+<body class="pb-24">
+
+    <div id="authModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex justify-center items-center p-4 transition-all duration-300 hidden">
+        <div class="glass-card w-full max-w-md rounded-3xl p-8 shadow-2xl">
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-extrabold tracking-tight">NewApp<span class="text-gradient">Store</span></h2>
+                <p class="text-xs text-gray-400 mt-2">Daftar akun gratis untuk mulai mengunduh APK Local</p>
+            </div>
+            <form id="authForm" onsubmit="prosesDaftar(event)" class="flex flex-col gap-4">
+                <div>
+                    <label class="text-xs font-semibold text-gray-400 block mb-1">Nama Lengkap</label>
+                    <input type="text" id="reg-nama" required placeholder="Masukkan nama kamu" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:outline-none focus:border-amber-500 text-sm">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-400 block mb-1">Alamat Email</label>
+                    <input type="email" id="reg-email" required placeholder="nama@neXai.space (jangan gmail yah)" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:outline-none focus:border-amber-500 text-sm">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-400 block mb-1">Password</label>
+                    <input type="password" id="reg-pass" required placeholder="••••••••" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:outline-none focus:border-amber-500 text-sm">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold py-3 rounded-xl shadow-lg mt-2 hover:opacity-90 transition-all text-sm">
+                    Buat Akun & Masuk
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="offerModal" class="fixed inset-0 z-40 bg-black/80 backdrop-blur-md flex justify-center items-center p-4 transition-all duration-300 hidden opacity-0">
+        <div class="glass-card w-full max-w-md rounded-3xl p-6 shadow-2xl relative border border-amber-500/20">
+            <div id="offer-view-main">
+                <div class="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-400 text-xl mb-4">
+                    <i class="fa-solid fa-gift"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Penawaran Spesial ✨</h3>
+                <p class="text-sm text-gray-300 leading-relaxed mb-6">
+                    Ingin mempublikasikan APK buatan sendiri? Dapatkan kesempatan <span class="text-amber-400 font-bold">Gratis pertama kali upload</span> di NewAppStore! Pamerkan hasil karyamu agar bisa diunduh oleh semua orang di komunitas.
+                </p>
+                <div class="flex flex-col gap-2">
+                    <button onclick="bukaFormOwner()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold py-3 rounded-xl transition-all text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Hubungi Owner
+                    </button>
+                    <button onclick="tutupPopUpSpesial()" class="w-full bg-white/5 hover:bg-white/10 text-gray-400 font-medium py-2.5 rounded-xl transition-all text-xs">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+
+            <div id="offer-view-form" class="hidden">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-file-medical text-amber-400"></i> Data Pengajuan APK
+                </h3>
+                <div class="flex flex-col gap-3.5 mb-5">
+                    <div>
+                        <label class="text-[11px] font-semibold text-gray-400 block mb-1">Nama APK</label>
+                        <input type="text" id="owner-nama-apk" placeholder="Contoh: neXai core" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 focus:outline-none focus:border-amber-500 text-sm">
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-semibold text-gray-400 block mb-1">Kategori</label>
+                        <select id="owner-kat-apk" class="w-full bg-[#12141c] border border-white/10 rounded-xl py-2.5 px-4 focus:outline-none focus:border-amber-500 text-sm text-gray-300">
+                            <option value="aplikasi">Aplikasi</option>
+                            <option value="game">Game</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-semibold text-gray-400 block mb-1">Ukuran File</label>
+                        <input type="text" id="owner-size-apk" placeholder="Contoh: 1.2 MB" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 focus:outline-none focus:border-amber-500 text-sm">
+                    </div>
+                    
+                    <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-3 mt-1 flex items-start gap-2.5">
+                        <input type="checkbox" id="owner-ceklis-drive" onchange="toggleTombolAdmin()" class="mt-1 w-4 h-4 accent-red-500 cursor-pointer">
+                        <label for="owner-ceklis-drive" class="text-xs text-red-400 font-medium select-none cursor-pointer leading-tight">
+                            upload ke MediaFire mandiri
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button onclick="kembaliKePenawaran()" class="px-4 bg-white/5 hover:bg-white/10 text-gray-300 rounded-xl transition-all text-sm"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button id="btn-hubungi-admin" onclick="kirimDataKeWhatsApp()" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-all text-sm flex items-center justify-center gap-2 hidden shadow-lg shadow-green-600/20">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Hubungi Admin
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-web-content">
+        <header class="p-5 sticky top-0 z-30 bg-[#0e1017]/90 backdrop-blur-md">
+            <div class="max-w-6xl mx-auto flex flex-col gap-4">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-2xl font-bold tracking-tight">NewApp<span class="text-gradient">Store</span></h1>
+                    <div id="user-avatar" onclick="switchTab('akun')" class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-500 to-amber-600 flex items-center justify-center font-bold text-black shadow-lg cursor-pointer uppercase">
+                        -
+                    </div>
+                </div>
+                <div class="relative flex items-center">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 text-gray-400"></i>
+                    <input type="text" id="searchInput" oninput="searchApp()" placeholder="Cari aplikasi atau game..." class="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-4 focus:outline-none focus:border-amber-500 transition-all placeholder:text-gray-500">
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-6xl mx-auto px-5 mt-2">
+            <div id="page-semua" class="page-content">
+                <div class="glass-card rounded-3xl p-6 mb-8 overflow-hidden relative flex flex-col justify-end h-48 bg-cover bg-center shadow-2xl" style="background-image: linear-gradient(to top, rgba(14,16,23,0.95), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=600&auto=format&fit=crop');">
+                    <span class="text-xs font-bold uppercase tracking-widest text-amber-400 mb-1">Aplikasi Pilihan</span>
+                    <h2 class="text-2xl font-extrabold text-white">Jelajahi Kreativitas Tanpa Batas</h2>
+                    <p class="text-sm text-gray-300 mt-1">Koleksi Aplikasi modifikasi terbaik tahun ini.</p>
+                </div>
+
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-fire text-amber-500"></i> Semua Aplikasi & Game</h3>
+                <div id="apps-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <div id="page-game" class="page-content hidden">
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-gamepad text-amber-500"></i> Game Seru</h3>
+                <div id="games-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <div id="page-akun" class="page-content hidden">
+                <div class="glass-card rounded-3xl p-6 max-w-md mx-auto relative shadow-xl mt-6">
+                    
+                    <div class="absolute top-5 right-5 z-20">
+                        <button onclick="toggleDropdownSetting()" class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-gray-400 hover:text-white transition-all flex items-center justify-center">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <div id="profile-dropdown" class="absolute right-0 mt-2 w-48 bg-[#12141c]/95 border border-white/10 backdrop-blur-xl rounded-2xl shadow-2xl py-2 hidden transition-all">
+                            <button onclick="menuUbahNama()" class="w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-user-pen text-amber-400"></i> Ubah Nama
+                            </button>
+                            <button onclick="menuTambahAkun()" class="w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-user-plus text-blue-400"></i> Tambah Akun
+                            </button>
+                            <hr class="border-white/10 my-1">
+                            <button onclick="prosesLogOut()" class="w-full text-left px-4 py-2.5 text-xs text-red-400 hover:bg-red-500/10 flex items-center gap-2 font-semibold">
+                                <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <div id="profile-avatar" class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-500 to-amber-600 flex items-center justify-center font-bold text-3xl text-black mx-auto shadow-2xl mb-3 uppercase">
+                            -
+                        </div>
+                        <h2 id="profile-name" class="text-lg font-bold">Memuat...</h2>
+                        <p id="profile-email" class="text-xs text-gray-400 mt-0.5">Memuat...</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 text-center bg-white/5 rounded-2xl p-3.5 my-5">
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase tracking-wider">Total Diunduh</p>
+                            <p id="total-download-count" class="text-lg font-bold text-amber-400">0</p>
+                        </div>
+                        <div class="border-l border-white/10">
+                            <p class="text-[10px] text-gray-400 uppercase tracking-wider">Status Server</p>
+                            <p class="text-sm font-bold text-green-400 flex items-center justify-center gap-1 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse"></span> Aktif</p>
+                        </div>
+                    </div>
+
+                    <div onclick="bukaSaluranWA()" class="group bg-gradient-to-r from-amber-500/10 to-yellow-500/5 border border-amber-500/20 rounded-2xl p-4 cursor-pointer hover:border-amber-500/50 transition-all mb-5">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-white flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-amber-400"></i> Info Lengkap</span>
+                            <span class="text-[10px] text-amber-400 group-hover:underline flex items-center gap-1">Saluran WA <i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i></span>
+                        </div>
+                        <div class="flex flex-col gap-2 text-xs text-gray-300">
+                            <div class="flex justify-between border-b border-white/5 pb-1.5">
+                                <span class="text-gray-400">Versi Web</span>
+                                <span class="font-semibold text-white">1.5</span>
+                            </div>
+                            <div class="flex justify-between border-b border-white/5 pb-1.5">
+                                <span class="text-gray-400">Developer</span>
+                                <span class="font-semibold text-white">PitNewbie'</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Status Jaringan</span>
+                                <span id="network-status" class="font-semibold text-green-400">Mengecek...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5"><i class="fa-solid fa-clock-rotate-left text-gray-500"></i> Riwayat Download</h4>
+                        <div id="history-container" class="flex flex-col gap-2 max-h-40 overflow-y-auto no-scrollbar">
+                            </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <div id="detailModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden justify-center items-end sm:items-center p-0 sm:p-4 transition-all opacity-0">
+            <div class="glass-card w-full sm:max-w-2xl rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto no-scrollbar transform translate-y-full sm:translate-y-0 sm:scale-95 transition-all duration-300">
+                <div class="p-5 border-b border-white/10 flex justify-between items-center sticky top-0 bg-[#0e1017]/90 backdrop-blur-md z-10">
+                    <span class="font-bold">Detail Aplikasi</span>
+                    <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="modal-body-content" class="p-6"></div>
+            </div>
+        </div>
+
+        <nav class="glass-nav fixed bottom-0 left-0 right-0 z-40 px-6 py-3 flex justify-around max-w-6xl mx-auto sm:rounded-t-3xl">
+            <button onclick="switchTab('semua')" id="nav-semua" class="flex flex-col items-center gap-1 text-amber-400 font-medium text-xs transition-all">
+                <i class="fa-solid fa-layer-group text-lg"></i> Semua
+            </button>
+            <button onclick="switchTab('game')" id="nav-game" class="flex flex-col items-center gap-1 text-gray-400 font-medium text-xs transition-all">
+                <i class="fa-solid fa-gamepad text-lg"></i> Game
+            </button>
+            <button onclick="switchTab('akun')" id="nav-akun" class="flex flex-col items-center gap-1 text-gray-400 font-medium text-xs transition-all">
+                <i class="fa-solid fa-user text-lg"></i> Akun
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        // === DATABASE DATA APLIKASI ===
+        const appsDatabase = [
+            {
+                id: "com.ai.neXai",
+                nama: "neXai core",
+                developer: "PitNewbie'",
+                kategori: "aplikasi",
+                icon: "logo neXai.jpg", 
+                deskripsi: "🤖 neXai core - AI Assistant Pribadi\n\nneXai core adalah asisten AI yang dirancang langsung untuk membantu.\n\n✨ Fitur Utama:\n- Chat Pintar - Tanya apa aja, dari PR sampe id konten\n- Ringan & Cepat - Optimized buat HP kentang juga lancar\n- Privasi 100% - Semua chat diproses lokal, ga ada yg nguping\n- Tanpa Iklan - Fokus ngobrol tanpa gangguan\n- gratis - chat gratis tanpa biaya\n\n💡 Cocok buat:\nPelajar, nulis caption, brainstorming, belajar bahasa, atau sekedar ngobrol.",
+                ukuran: "206 KB",
+                driveId: "https://www.mediafire.com/file/ef5leipdh8wrynh/neXai.apk/file",
+                versi: "2.5",
+                // Ditambahkan label khusus sesuai request abang
+                labels: ["#webview", "#ai", "#online"]
+            }
+        ];
+
+        // === SYSTEM SECURITY & SESSION AUTHENTICATION ===
+        document.addEventListener("DOMContentLoaded", () => {
+            periksaSesiAkun();
+            tampilkanPopUpSpesial();
+            setupMonevJaringan();
+        });
+
+        function periksaSesiAkun() {
+            const loginSession = localStorage.getItem("nexus_user_session");
+            const authModal = document.getElementById("authModal");
+            const mainContent = document.getElementById("main-web-content");
+
+            if (!loginSession) {
+                authModal.classList.remove("hidden");
+                mainContent.classList.add("hidden");
+            } else {
+                authModal.classList.add("hidden");
+                mainContent.className = "block";
+                
+                const userData = JSON.parse(loginSession);
+                tampilkanDataUserDiProfil(userData);
+                
+                renderApps();
+                hitungTotalDownload();
+                renderRiwayatDownload();
+                cekUrlParameter();
+            }
+        }
+
+        function prosesDaftar(event) {
+            event.preventDefault();
+            const nama = document.getElementById("reg-nama").value.trim();
+            const email = document.getElementById("reg-email").value.trim();
+            const pass = document.getElementById("reg-pass").value.trim();
+
+            if(nama && email && pass) {
+                const sessionObject = { name: nama, email: email };
+                localStorage.setItem("nexus_user_session", JSON.stringify(sessionObject));
+                periksaSesiAkun();
+            }
+        }
+
+        function tampilkanDataUserDiProfil(user) {
+            const inisial = user.name.charAt(0);
+            document.getElementById("user-avatar").innerText = inisial;
+            document.getElementById("profile-avatar").innerText = inisial;
+            document.getElementById("profile-name").innerText = user.name;
+            document.getElementById("profile-email").innerText = user.email;
+        }
+
+        // === POP UP PENAWARAN SPESIAL FUNCTIONS ===
+        function tampilkanPopUpSpesial() {
+            const modal = document.getElementById("offerModal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            setTimeout(() => { modal.classList.remove("opacity-0"); }, 50);
+        }
+
+        function tutupPopUpSpesial() {
+            const modal = document.getElementById("offerModal");
+            modal.classList.add("opacity-0");
+            setTimeout(() => {
+                modal.classList.remove("flex");
+                modal.classList.add("hidden");
+                // Reset view ke semula jika dibuka lagi nanti
+                kembaliKePenawaran();
+            }, 300);
+        }
+
+        function bukaFormOwner() {
+            document.getElementById("offer-view-main").classList.add("hidden");
+            document.getElementById("offer-view-form").classList.remove("hidden");
+        }
+
+        function kembaliKePenawaran() {
+            document.getElementById("offer-view-form").classList.add("hidden");
+            document.getElementById("offer-view-main").classList.remove("hidden");
+        }
+
+        function toggleTombolAdmin() {
+            const ceklis = document.getElementById("owner-ceklis-drive").checked;
+            const btn = document.getElementById("btn-hubungi-admin");
+            if(ceklis) {
+                btn.classList.remove("hidden");
+            } else {
+                btn.classList.add("hidden");
+            }
+        }
+
+        function kirimDataKeWhatsApp() {
+            const namaApk = document.getElementById("owner-nama-apk").value.trim();
+            const kategori = document.getElementById("owner-kat-apk").value;
+            const ukuran = document.getElementById("owner-size-apk").value.trim();
+
+            if(!namaApk || !ukuran) {
+                alert("Harap isi seluruh formulir data APK terlebih dahulu, Bg!");
+                return;
+            }
+
+            // Menyusun format text pesan otomatis
+            const pesanWa = `Halo Admin, saya ingin mengajukan publikasi APK buatan saya.\n\n` +
+                            `• Nama APK : ${namaApk}\n` +
+                            `• Kategori : ${kategori}\n` +
+                            `• Ukuran : ${ukuran}\n\n` +
+                            `*(Sudah saya upload ke MediaFire mandiri, siap dikirim link-nya)*`;
+
+            // Ganti nomor di bawah ini dengan nomor WA milik abang beneran (gunakan format kode negara 62)
+            const nomorAdmin = "6285727658632"; 
+            const linkWa = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesanWa)}`;
+            
+            window.open(linkWa, '_blank');
+            tutupPopUpSpesial();
+        }
+
+        // === PENGATURAN DROPDOWN PROFIL (TITIK TIGA) ===
+        function toggleDropdownSetting() {
+            const dp = document.getElementById("profile-dropdown");
+            dp.classList.toggle("hidden");
+        }
+
+        // Klik di luar dropdown untuk menutup otomatis
+        document.addEventListener("click", (e) => {
+            const btn = document.querySelector(".absolute.top-5.right-5 button");
+            const dp = document.getElementById("profile-dropdown");
+            if (btn && !btn.contains(e.target) && dp && !dp.contains(e.target)) {
+                dp.classList.add("hidden");
+            }
+        });
+
+        function menuUbahNama() {
+            toggleDropdownSetting();
+            const session = localStorage.getItem("nexus_user_session");
+            if(!session) return;
+            const userData = JSON.parse(session);
+            
+            const namaBaru = prompt("Masukkan nama lengkap baru kamu:", userData.name);
+            if(namaBaru && namaBaru.trim() !== "") {
+                userData.name = namaBaru.trim();
+                localStorage.setItem("nexus_user_session", JSON.stringify(userData));
+                periksaSesiAkun();
+                alert("Nama berhasil diubah!");
+            }
+        }
+
+        function menuTambahAkun() {
+            toggleDropdownSetting();
+            if(confirm("Ingin menambahkan akun baru? Kamu akan dialihkan ke halaman pendaftaran.")) {
+                localStorage.removeItem("nexus_user_session");
+                periksaSesiAkun();
+            }
+        }
+
+        function prosesLogOut() {
+            toggleDropdownSetting();
+            if(confirm("Apakah kamu yakin ingin keluar dari akun NewApp?")) {
+                localStorage.removeItem("nexus_user_session");
+                switchTab('semua');
+                periksaSesiAkun();
+            }
+        }
+
+        // === FITUR DETEKSI JARINGAN REAL-TIME ===
+        function setupMonevJaringan() {
+            const el = document.getElementById("network-status");
+            
+            function updateStatus() {
+                if(navigator.onLine) {
+                    el.innerText = "Aktif";
+                    el.className = "font-semibold text-green-400";
+                } else {
+                    el.innerText = "Of";
+                    el.className = "font-semibold text-red-400";
+                }
+            }
+            
+            updateStatus();
+            window.addEventListener("online", updateStatus);
+            window.addEventListener("offline", updateStatus);
+        }
+
+        function bukaSaluranWA() {
+            // Mengarah ke saluran whatsapp yang diinginkan
+            window.open("https://whatsapp.com/channel/0029Vb6678635fLqu0pxqx2K", "_blank");
+        }
+
+        // === RENDERING RIWAYAT DOWNLOAD ===
+        function renderRiwayatDownload() {
+            const container = document.getElementById("history-container");
+            container.innerHTML = "";
+            let adaRiwayat = false;
+
+            appsDatabase.forEach(app => {
+                const dataLokal = localStorage.getItem(`app_${app.id}`);
+                if (dataLokal) {
+                    adaRiwayat = true;
+                    const parsed = JSON.parse(dataLokal);
+                    const tanggal = new Date(parsed.waktu).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit'});
+                    
+                    container.innerHTML += `
+                        <div class="flex items-center justify-between bg-white/5 border border-white/5 rounded-xl p-2.5">
+                            <div class="flex items-center gap-2.5 overflow-hidden">
+                                <img src="${app.icon}" class="w-8 h-8 rounded-lg object-cover border border-white/10">
+                                <div class="overflow-hidden">
+                                    <p class="text-xs font-semibold text-white truncate">${app.nama}</p>
+                                    <p class="text-[10px] text-gray-400 truncate">${tanggal} WIB</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] bg-green-500/10 text-green-400 border border-green-500/20 px-1.5 py-0.5 rounded-md font-medium">Sukses</span>
+                        </div>
+                    `;
+                }
+            });
+
+            if (!adaRiwayat) {
+                container.innerHTML = `<p class="text-xs text-gray-500 italic text-center py-2">Belum ada riwayat unduhan.</p>`;
+            }
+        }
+
+        // === FITUR DEEP LINKING (SHARE LINK) ===
+        function bagikanAplikasi(appId) {
+            const baseUrl = window.location.origin + window.location.pathname;
+            const linkShare = `${baseUrl}?app=${appId}`;
+            
+            navigator.clipboard.writeText(linkShare).then(() => {
+                alert("Link aplikasi berhasil disalin ke clipboard! Siap dibagikan.");
+            }).catch(err => {
+                prompt("Gagal salin otomatis. Silakan salin link di bawah ini:", linkShare);
+            });
+        }
+
+        function cekUrlParameter() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const appIdDariLink = urlParams.get('app');
+
+            if (appIdDariLink) {
+                setTimeout(() => {
+                    openModal(appIdDariLink);
+                }, 400);
+            }
+        }
+
+        // === STORE CORE FUNCTIONS ===
+        function renderApps() {
+            const appsContainer = document.getElementById("apps-container");
+            const gamesContainer = document.getElementById("games-container");
+            appsContainer.innerHTML = "";
+            gamesContainer.innerHTML = "";
+
+            appsDatabase.forEach(app => {
+                const statusTombol = dapatkanStatusTombol(app.id, app.versi);
+                let btnColorClass = "btn-premium";
+                if(statusTombol === "Update") btnColorClass = "btn-update";
+                else if(statusTombol === "Buka") btnColorClass = "bg-white/10 text-white hover:bg-white/20";
+
+                const appCardHtml = `
+                    <div class="glass-card rounded-2xl p-4 flex items-center justify-between gap-3 hover:border-amber-500/50 transition-all duration-300">
+                        <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="openModal('${app.id}')">
+                            <img src="${app.icon}" alt="${app.nama}" class="w-14 h-14 rounded-2xl object-cover border border-white/10">
+                            <div class="overflow-hidden">
+                                <h4 class="font-semibold text-sm truncate text-white">${app.nama}</h4>
+                                <p class="text-xs text-gray-400 truncate">${app.developer}</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-gray-400">${app.ukuran}</span>
+                                    <span class="text-[10px] text-amber-400 font-medium">v${app.versi}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="eksekusiDownload('${app.id}')" id="btn-main-${app.id}" class="px-4 py-2 rounded-xl font-bold text-xs ${btnColorClass} whitespace-nowrap">
+                            ${statusTombol}
+                        </button>
+                    </div>
+                `;
+
+                if(app.kategori === "aplikasi" || app.kategori === "game") appsContainer.innerHTML += appCardHtml;
+                if(app.kategori === "game") gamesContainer.innerHTML += appCardHtml;
+            });
+        }
+
+        function dapatkanStatusTombol(appId, versiSekarang) {
+            const dataLokal = localStorage.getItem(`app_${appId}`);
+            if (!dataLokal) return "Download";
+            const parsedData = JSON.parse(dataLokal);
+            if (parsedData.versiDownloaded !== versiSekarang) return "Update";
+            return "Buka";
+        }
+
+        function eksekusiDownload(appId) {
+            const app = appsDatabase.find(a => a.id === appId);
+            if(!app) return;
+
+            const status = dapatkanStatusTombol(app.id, app.versi);
+            if(status === "Buka") {
+                alert(`Aplikasi ${app.nama} sudah diunduh sebelumnya.`);
+                return;
+            }
+
+            window.open(app.driveId, '_blank');
+
+            localStorage.setItem(`app_${app.id}`, JSON.stringify({
+                id: app.id, versiDownloaded: app.versi, waktu: new Date().getTime()
+            }));
+
+            alert(status === "Update" ? `Membuka halaman pembaruan ${app.nama}...` : `Mengalihkan ke halaman unduhan ${app.nama}...`);
+            renderApps();
+            hitungTotalDownload();
+            renderRiwayatDownload();
+            if(!document.getElementById("detailModal").classList.contains("hidden")) openModal(appId);
+        }
+
+        function openModal(appId) {
+            const app = appsDatabase.find(a => a.id === appId);
+            if(!app) return;
+
+            const statusTombol = dapatkanStatusTombol(app.id, app.versi);
+            let btnColorClass = "btn-premium";
+            if(statusTombol === "Update") btnColorClass = "btn-update";
+            else if(statusTombol === "Buka") btnColorClass = "bg-white/10 text-white flex-1";
+
+            let tombolUninstallHtml = "";
+            if (statusTombol === "Buka" || statusTombol === "Update") {
+                tombolUninstallHtml = `
+                    <button onclick="eksekusiUninstall('${app.id}')" class="px-5 py-3.5 rounded-2xl bg-red-600/20 border border-red-500/30 text-red-400 hover:bg-red-600 hover:text-white font-bold text-sm transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-trash-can"></i> Uninstall
+                    </button>
+                `;
+            }
+
+            // Render tag label di atas tentang aplikasi
+            let labelsHtml = "";
+            if(app.labels) {
+                app.labels.forEach(label => {
+                    labelsHtml += `<span class="text-[11px] font-medium bg-amber-500/10 border border-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">${label}</span>`;
+                });
+            }
+
+            const content = document.getElementById("modal-body-content");
+            content.innerHTML = `
+                <div class="flex gap-4 items-start mb-6">
+                    <img src="${app.icon}" class="w-20 h-20 rounded-2xl object-cover border border-white/10 shadow-xl" alt="${app.nama}">
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-white">${app.nama}</h2>
+                        <p class="text-sm text-amber-400 font-medium">${app.developer}</p>
+                        <p class="text-xs text-gray-400 mt-1">Kategori: <span class="capitalize">${app.kategori}</span></p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2 bg-white/5 border border-white/5 rounded-2xl p-3 text-center mb-4">
+                    <div>
+                        <p class="text-[10px] text-gray-400 uppercase">Ukuran</p>
+                        <p class="text-sm font-bold text-white mt-0.5">${app.ukuran}</p>
+                    </div>
+                    <div class="border-x border-white/10">
+                        <p class="text-[10px] text-gray-400 uppercase">Versi</p>
+                        <p class="text-sm font-bold text-white mt-0.5">${app.versi}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-400 uppercase">Keamanan</p>
+                        <p class="text-sm font-bold text-green-400 mt-0.5"><i class="fa-solid fa-shield-halved text-xs"></i> Aman</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-2.5 mb-2.5">
+                    ${tombolUninstallHtml}
+                    <button onclick="eksekusiDownload('${app.id}')" class="py-3.5 rounded-2xl font-bold text-sm transition-all flex-1 ${btnColorClass}">
+                        ${statusTombol === 'Download' ? '<i class="fa-solid fa-cloud-arrow-down mr-2"></i> Download File APK' : statusTombol === 'Update' ? '<i class="fa-solid fa-rotate mr-2"></i> Update APK' : '<i class="fa-solid fa-circle-check mr-2"></i> Buka'}
+                    </button>
+                </div>
+
+                <button onclick="bagikanAplikasi('${app.id}')" class="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300 font-medium text-xs mb-5 flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-solid fa-share-nodes text-amber-400"></i> Bagikan Link Aplikasi
+                </button>
+
+                <div class="flex flex-wrap gap-2 mb-4">
+                    ${labelsHtml}
+                </div>
+
+                <h4 class="font-bold text-sm mb-2">Tentang Aplikasi ini</h4>
+                <p class="text-sm text-gray-300 leading-relaxed whitespace-pre-line">${app.deskripsi}</p>
+            `;
+
+            const modal = document.getElementById("detailModal");
+            const modalBox = modal.querySelector(".glass-card");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            setTimeout(() => {
+                modal.classList.remove("opacity-0");
+                modalBox.classList.remove("translate-y-full", "sm:scale-95");
+            }, 50);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("detailModal");
+            const modalBox = modal.querySelector(".glass-card");
+            modal.classList.add("opacity-0");
+            modalBox.classList.add("translate-y-full", "sm:scale-95");
+            setTimeout(() => {
+                modal.classList.remove("flex");
+                modal.classList.add("hidden");
+            }, 300);
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll(".page-content").forEach(p => p.classList.add("hidden"));
+            document.getElementById(`page-${tabName}`).classList.remove("hidden");
+            document.querySelectorAll("nav button").forEach(b => {
+                b.classList.remove("text-amber-400"); b.classList.add("text-gray-400");
+            });
+            document.getElementById(`nav-${tabName}`).classList.add("text-amber-400");
+            document.getElementById(`nav-${tabName}`).classList.remove("text-gray-400");
+        }
+
+        function eksekusiUninstall(appId) {
+            const app = appsDatabase.find(a => a.id === appId);
+            if(!app) return;
+
+            if(confirm(`Apakah kamu yakin ingin meng-uninstall ${app.nama}? Semua data lokal aplikasi ini akan dihapus.`)) {
+                localStorage.removeItem(`app_${app.id}`);
+                alert(`${app.nama} berhasil di-uninstall!`);
+                renderApps();
+                hitungTotalDownload();
+                renderRiwayatDownload();
+                openModal(app.id);
+            }
+        }
+
+        function searchApp() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const cards = document.querySelectorAll("#apps-container > div, #games-container > div");
+            cards.forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(query) ? "flex" : "none";
+            });
+        }
+
+        function hitungTotalDownload() {
+            let count = 0;
+            appsDatabase.forEach(app => { if(localStorage.getItem(`app_${app.id}`)) count++; });
+            const el = document.getElementById("total-download-count");
+            if(el) el.innerText = count;
+        }
+    </script>
+</body>
+</html>
