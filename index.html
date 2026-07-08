@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NewAppStore v1.5</title>
+    <title>NewAppStore v2.7</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -53,6 +53,7 @@
 </head>
 <body class="pb-24">
 
+    <!-- MODAL AUTH -->
     <div id="authModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex justify-center items-center p-4 transition-all duration-300 hidden">
         <div class="glass-card w-full max-w-md rounded-3xl p-8 shadow-2xl">
             <div class="text-center mb-6">
@@ -79,18 +80,21 @@
         </div>
     </div>
 
+    <!-- MODAL OFFER / POP UP PENAWARAN (Blok Lengkap yang Diganti) -->
     <div id="offerModal" class="fixed inset-0 z-40 bg-black/80 backdrop-blur-md flex justify-center items-center p-4 transition-all duration-300 hidden opacity-0">
-        <div class="glass-card w-full max-w-md rounded-3xl p-6 shadow-2xl relative border border-amber-500/20">
-            <div id="offer-view-main">
-                <div class="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-400 text-xl mb-4">
+        <div class="glass-card w-full max-w-2xl rounded-3xl p-6 shadow-2xl relative border border-amber-500/20 max-h-[90vh] overflow-y-auto no-scrollbar">
+            
+            <!-- TAMPILAN UTAMA (Sesuai File 1000043398.jpg) -->
+            <div id="offer-view-main" class="max-w-md mx-auto text-center py-4">
+                <div class="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-400 text-2xl mx-auto mb-4">
                     <i class="fa-solid fa-gift"></i>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-2">Penawaran Spesial ✨</h3>
+                <h3 class="text-2xl font-bold text-white mb-2">Penawaran Spesial ✨</h3>
                 <p class="text-sm text-gray-300 leading-relaxed mb-6">
                     Ingin mempublikasikan APK buatan sendiri? Dapatkan kesempatan <span class="text-amber-400 font-bold">Gratis pertama kali upload</span> di NewAppStore! Pamerkan hasil karyamu agar bisa diunduh oleh semua orang di komunitas.
                 </p>
-                <div class="flex flex-col gap-2">
-                    <button onclick="bukaFormOwner()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold py-3 rounded-xl transition-all text-sm flex items-center justify-center gap-2">
+                <div class="flex flex-col gap-2.5 max-w-sm mx-auto">
+                    <button onclick="bukaFormOwner()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold py-3 rounded-xl transition-all text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 hover:opacity-90">
                         <i class="fa-solid fa-paper-plane"></i> Hubungi Owner
                     </button>
                     <button onclick="tutupPopUpSpesial()" class="w-full bg-white/5 hover:bg-white/10 text-gray-400 font-medium py-2.5 rounded-xl transition-all text-xs">
@@ -99,14 +103,32 @@
                 </div>
             </div>
 
-            <div id="offer-view-form" class="hidden">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-file-medical text-amber-400"></i> Data Pengajuan APK
-                </h3>
-                <div class="flex flex-col gap-3.5 mb-5">
+            <!-- TAMPILAN FORMULIR LENGKAP HALAMAN DALAM POP-UP (Sesuai File 1000043399.jpg & 1000043416.jpg) -->
+            <div id="offer-view-form" class="hidden animate-fade-in">
+                <!-- Header Form: Judul + Tombol Kembali di Kanan Atas -->
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-file-medical text-amber-400"></i> Data Pengajuan APK
+                    </h3>
+                    <!-- Tombol kembali di atas kanan biar aman -->
+                    <button onclick="kembaliKePenawaran()" class="w-9 h-9 flex items-center justify-center bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300 rounded-xl transition-all">
+                        <i class="fa-solid fa-arrow-left text-sm"></i>
+                    </button>
+                </div>
+                <p class="text-xs text-gray-400 mb-6">Silakan lengkapi spesifikasi data aplikasi atau game kamu di bawah ini.</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="text-[11px] font-semibold text-gray-400 block mb-1">ID APK (Package Name)</label>
+                        <input type="text" id="owner-id-apk" placeholder="Contoh: com.ai.neXai" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 focus:outline-none focus:border-amber-500 text-sm text-gray-200">
+                    </div>
                     <div>
                         <label class="text-[11px] font-semibold text-gray-400 block mb-1">Nama APK</label>
-                        <input type="text" id="owner-nama-apk" placeholder="Contoh: neXai core" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 focus:outline-none focus:border-amber-500 text-sm">
+                        <input type="text" id="owner-nama-apk" placeholder="Contoh: neXai core" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 focus:outline-none focus:border-amber-500 text-sm text-gray-200">
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-semibold text-gray-400 block mb-1">Developer</label>
+                        <input type="text" id="owner-dev-apk" placeholder="Contoh: PitNewbie'" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 focus:outline-none focus:border-amber-500 text-sm text-gray-200">
                     </div>
                     <div>
                         <label class="text-[11px] font-semibold text-gray-400 block mb-1">Kategori</label>
@@ -116,28 +138,63 @@
                         </select>
                     </div>
                     <div>
-                        <label class="text-[11px] font-semibold text-gray-400 block mb-1">Ukuran File</label>
-                        <input type="text" id="owner-size-apk" placeholder="Contoh: 1.2 MB" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 focus:outline-none focus:border-amber-500 text-sm">
+                        <label class="text-[11px] font-semibold text-gray-400 block mb-1">Upload Logo (Dari Galeri)</label>
+                        <input type="file" id="owner-logo-apk" accept="image/*" class="w-full bg-white/5 border border-white/10 rounded-xl py-1.5 px-3 focus:outline-none focus:border-amber-500 text-xs text-gray-400 file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-black hover:file:opacity-80 cursor-pointer">
                     </div>
-                    
-                    <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-3 mt-1 flex items-start gap-2.5">
-                        <input type="checkbox" id="owner-ceklis-drive" onchange="toggleTombolAdmin()" class="mt-1 w-4 h-4 accent-red-500 cursor-pointer">
-                        <label for="owner-ceklis-drive" class="text-xs text-red-400 font-medium select-none cursor-pointer leading-tight">
-                            upload ke MediaFire mandiri
-                        </label>
+                    <div>
+                        <label class="text-[11px] font-semibold text-gray-400 block mb-1">Versi APK</label>
+                        <input type="text" id="owner-versi-apk" placeholder="Contoh: 2.5" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 focus:outline-none focus:border-amber-500 text-sm text-gray-200">
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-semibold text-gray-400 block mb-1">Ukuran File APK (Di bawah 1GB)</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="owner-size-angka" placeholder="Angka" class="w-2/3 bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 focus:outline-none focus:border-amber-500 text-sm text-gray-200">
+                            <select id="owner-size-satuan" class="w-1/3 bg-[#12141c] border border-white/10 rounded-xl py-2.5 px-2 focus:outline-none focus:border-amber-500 text-sm text-gray-300">
+                                <option value="KB">KB</option>
+                                <option value="MB" selected>MB</option>
+                                <option value="GB">GB</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-semibold text-gray-400 block mb-1">Pilih Label APK / Game (Multi-select)</label>
+                        <div id="popup-labels-container" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 h-28 overflow-y-auto flex flex-col gap-2 no-scrollbar">
+                            <!-- Di-generate via JS -->
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex gap-2">
-                    <button onclick="kembaliKePenawaran()" class="px-4 bg-white/5 hover:bg-white/10 text-gray-300 rounded-xl transition-all text-sm"><i class="fa-solid fa-arrow-left"></i></button>
+                <div class="mb-4">
+                    <label class="text-[11px] font-semibold text-gray-400 block mb-1">Deskripsi APK</label>
+                    <textarea id="owner-desk-apk" rows="3" placeholder="Tulis rincian deskripsi, kecocokan, beserta fitur utama aplikasi..." class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 focus:outline-none focus:border-amber-500 text-sm text-gray-200 resize-none"></textarea>
+                </div>
+                
+                <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-3.5 mb-4 flex items-start gap-2.5">
+                    <input type="checkbox" id="owner-ceklis-drive" onchange="toggleTombolAdmin()" class="mt-1 w-4 h-4 accent-red-500 cursor-pointer">
+                    <label for="owner-ceklis-drive" class="text-xs text-red-400 font-medium select-none cursor-pointer leading-tight">
+                        upload ke MediaFire mandiri
+                    </label>
+                </div>
+
+                <!-- Bagian Dinamis Link Download -->
+                <div id="mediafire-input-section" class="hidden flex flex-col gap-4 mb-4">
+                    <div>
+                        <label class="text-[11px] font-semibold text-gray-400 block mb-1">Link Download MediaFire</label>
+                        <input type="url" id="owner-link-mediafire" placeholder="https://www.mediafire.com/file/..." class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 focus:outline-none focus:border-amber-500 text-sm text-gray-200">
+                    </div>
+                </div>
+
+                <div class="flex">
                     <button id="btn-hubungi-admin" onclick="kirimDataKeWhatsApp()" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-all text-sm flex items-center justify-center gap-2 hidden shadow-lg shadow-green-600/20">
-                        <i class="fa-brands fa-whatsapp text-lg"></i> Hubungi Admin
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Ajukan APK
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+
+    <!-- MAIN WEB CONTENT -->
     <div id="main-web-content">
         <header class="p-5 sticky top-0 z-30 bg-[#0e1017]/90 backdrop-blur-md">
             <div class="max-w-6xl mx-auto flex flex-col gap-4">
@@ -173,7 +230,6 @@
 
             <div id="page-akun" class="page-content hidden">
                 <div class="glass-card rounded-3xl p-6 max-w-md mx-auto relative shadow-xl mt-6">
-                    
                     <div class="absolute top-5 right-5 z-20">
                         <button onclick="toggleDropdownSetting()" class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-gray-400 hover:text-white transition-all flex items-center justify-center">
                             <i class="fa-solid fa-ellipsis-vertical"></i>
@@ -218,7 +274,7 @@
                         </div>
                         <div class="flex flex-col gap-2 text-xs text-gray-300">
                             <div class="flex justify-between border-b border-white/5 pb-1.5">
-                                <span class="text-gray-400">Versi Web</span>
+                                                               <span class="text-gray-400">Versi Web</span>
                                 <span class="font-semibold text-white">1.5</span>
                             </div>
                             <div class="flex justify-between border-b border-white/5 pb-1.5">
@@ -234,10 +290,8 @@
 
                     <div>
                         <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5"><i class="fa-solid fa-clock-rotate-left text-gray-500"></i> Riwayat Download</h4>
-                        <div id="history-container" class="flex flex-col gap-2 max-h-40 overflow-y-auto no-scrollbar">
-                            </div>
+                        <div id="history-container" class="flex flex-col gap-2 max-h-40 overflow-y-auto no-scrollbar"></div>
                     </div>
-
                 </div>
             </div>
         </main>
@@ -277,8 +331,7 @@
                 deskripsi: "🤖 neXai core - AI Assistant Pribadi\n\nneXai core adalah asisten AI yang dirancang langsung untuk membantu.\n\n✨ Fitur Utama:\n- Chat Pintar - Tanya apa aja, dari PR sampe id konten\n- Ringan & Cepat - Optimized buat HP kentang juga lancar\n- Privasi 100% - Semua chat diproses lokal, ga ada yg nguping\n- Tanpa Iklan - Fokus ngobrol tanpa gangguan\n- gratis - chat gratis tanpa biaya\n\n💡 Cocok buat:\nPelajar, nulis caption, brainstorming, belajar bahasa, atau sekedar ngobrol.",
                 ukuran: "206 KB",
                 driveId: "https://www.mediafire.com/file/ef5leipdh8wrynh/neXai.apk/file",
-                versi: "2.5",
-                // Ditambahkan label khusus sesuai request abang
+                versi: "1.2.5.2",
                 labels: ["#webview", "#ai", "#online"]
             },
                         {
@@ -293,15 +346,51 @@
                 versi: "1.26.21.1",
                 // Ditambahkan label khusus sesuai request abang
                 labels: ["#rpg", "#petualangan", "#aksi", "#santai", "#bajakan"]
-                        }
+            },
+                        {
+                id: "com.Orbitku.3d",
+                nama: "Orbitku - simulasi tata surya",
+                developer: "PitNewbie",
+                kategori: "game",
+                icon: "Orbitku.png", 
+                deskripsi: "Simulasi Keliling Tata surya, dan menjelajah planet, bukan",
+                ukuran: "5,2 MB",
+                driveId: "https://www.mediafire.com/file/rfbglcixvkpnoui/Orbitku.apk/file",
+                versi: "1.5.8.12",
+                // Ditambahkan label khusus sesuai request abang
+                labels: ["#webview", "#petualangan", "#simulasi", "#santai", "#pengetahuan"]
+            }
         ];
 
-        // === SYSTEM SECURITY & SESSION AUTHENTICATION ===
+        // 50 REKOMENDASI LABEL UNTUK FORMULIR
+        const rekomendasiLabels = [
+            "#webview", "#ai", "#online", "#offline", "#tools", "#utility", "#premium", "#mod", "#pro", "#games", 
+            "#action", "#rpg", "#simulation", "#strategy", "#casual", "#adventure", "#puzzle", "#arcade", "#anime", "#pixelart",
+            "#openworld", "#multiplayer", "#fps", "#racing", "#sports", "#horror", "#survival", "#sandbox", "#education", "#productivity",
+            "#social", "#entertainment", "#photography", "#videoeditor", "#music", "#downloader", "#automation", "#finance", "#lifestyle", "#customization",
+            "#launcher", "#widget", "#iconpack", "#root", "#noboot", "#lightweight", "#fast", "#secure", "#adfree", "#free"
+        ];
+                                
         document.addEventListener("DOMContentLoaded", () => {
             periksaSesiAkun();
             tampilkanPopUpSpesial();
             setupMonevJaringan();
+            generatePopupLabels();
         });
+
+        // GENERATE REKOMENDASI LABEL DI POPUP FORM
+        function generatePopupLabels() {
+            const container = document.getElementById("popup-labels-container");
+            container.innerHTML = "";
+            rekomendasiLabels.forEach((label, idx) => {
+                container.innerHTML += `
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="pop-lbl-${idx}" value="${label}" class="owner-labels-cb w-4 h-4 accent-amber-500 cursor-pointer">
+                        <label for="pop-lbl-${idx}" class="text-xs text-gray-300 cursor-pointer select-none">${label}</label>
+                    </div>
+                `;
+            });
+        }
 
         function periksaSesiAkun() {
             const loginSession = localStorage.getItem("nexus_user_session");
@@ -346,7 +435,7 @@
             document.getElementById("profile-email").innerText = user.email;
         }
 
-        // === POP UP PENAWARAN SPESIAL FUNCTIONS ===
+        // === POP UP PENAWARAN FUNCTIONS ===
         function tampilkanPopUpSpesial() {
             const modal = document.getElementById("offerModal");
             modal.classList.remove("hidden");
@@ -360,7 +449,6 @@
             setTimeout(() => {
                 modal.classList.remove("flex");
                 modal.classList.add("hidden");
-                // Reset view ke semula jika dibuka lagi nanti
                 kembaliKePenawaran();
             }, 300);
         }
@@ -378,29 +466,72 @@
         function toggleTombolAdmin() {
             const ceklis = document.getElementById("owner-ceklis-drive").checked;
             const btn = document.getElementById("btn-hubungi-admin");
+            const mfSection = document.getElementById("mediafire-input-section");
+            
             if(ceklis) {
                 btn.classList.remove("hidden");
+                mfSection.classList.remove("hidden");
             } else {
                 btn.classList.add("hidden");
+                mfSection.classList.add("hidden");
             }
         }
 
+        // FORMAT PRINT JSON KE WHATSAPP ADMIN (Sesuai Struktur)
         function kirimDataKeWhatsApp() {
+            const idApk = document.getElementById("owner-id-apk").value.trim();
             const namaApk = document.getElementById("owner-nama-apk").value.trim();
+            const devApk = document.getElementById("owner-dev-apk").value.trim();
             const kategori = document.getElementById("owner-kat-apk").value;
-            const ukuran = document.getElementById("owner-size-apk").value.trim();
+            const logoInput = document.getElementById("owner-logo-apk");
+            const versi = document.getElementById("owner-versi-apk").value.trim();
+            const sizeAngka = document.getElementById("owner-size-angka").value.trim();
+            const sizeSatuan = document.getElementById("owner-size-satuan").value;
+            const deskripsi = document.getElementById("owner-desk-apk").value.trim();
+            const linkMediaFire = document.getElementById("owner-link-mediafire").value.trim();
 
-            if(!namaApk || !ukuran) {
+            if(!idApk || !namaApk || !devApk || !versi || !sizeAngka || !deskripsi || !linkMediaFire) {
                 alert("Harap isi seluruh formulir data APK terlebih dahulu, Bg!");
                 return;
             }
 
-            // Menyusun format text pesan otomatis
-            const pesanWa = `Halo Admin, saya ingin mengajukan publikasi APK buatan saya.\n\n` +
-                            `• Nama APK : ${namaApk}\n` +
-                            `• Kategori : ${kategori}\n` +
-                            `• Ukuran : ${ukuran}\n\n` +
-                            `*(Sudah saya upload ke MediaFire mandiri, siap dikirim link-nya)*`;
+            // Validasi Ukuran File Limit 1 GB
+            let totalMB = parseFloat(sizeAngka);
+            if (sizeSatuan === "KB") totalMB = totalMB / 1024;
+            if (sizeSatuan === "GB") totalMB = totalMB * 1024;
+
+            if (totalMB > 1024) {
+                alert("Ukuran APK melampaui batas limit 1GB, mohon periksa kembali file anda.");
+                return;
+            }
+
+            // Mengambil nama file gambar yang diupload dari galeri
+            let namaFileIcon = "logo default.jpg";
+            if (logoInput.files.length > 0) {
+                namaFileIcon = logoInput.files[0].name;
+            }
+
+            // Mengumpulkan Label Terpilih
+            const labelTerpilih = [];
+            document.querySelectorAll(".owner-labels-cb:checked").forEach(cb => {
+                labelTerpilih.push(cb.value);
+            });
+
+            // Menyusun Format Output Objek JSON Persis yang Diminta
+            const dataJSONString = JSON.stringify({
+                id: idApk,
+                nama: namaApk,
+                developer: devApk,
+                kategori: kategori,
+                icon: namaFileIcon,
+                deskripsi: deskripsi,
+                ukuran: `${sizeAngka} ${sizeSatuan}`,
+                driveId: linkMediaFire,
+                versi: versi,
+                labels: labelTerpilih
+            }, null, 4);
+
+            const pesanWa = `Halo Admin, saya ingin mengajukan publikasi data APK.\n\nBerikut hasil teks datanya:\n\n\`\`\`javascript\n${dataJSONString}\n\`\`\``;
 
             // Ganti nomor di bawah ini dengan nomor WA milik abang beneran (gunakan format kode negara 62)
             const nomorAdmin = "6285727658632"; 
@@ -410,13 +541,12 @@
             tutupPopUpSpesial();
         }
 
-        // === PENGATURAN DROPDOWN PROFIL (TITIK TIGA) ===
+                // === PENGATURAN DROPDOWN PROFIL (TITIK TIGA) ===
         function toggleDropdownSetting() {
             const dp = document.getElementById("profile-dropdown");
             dp.classList.toggle("hidden");
         }
 
-        // Klik di luar dropdown untuk menutup otomatis
         document.addEventListener("click", (e) => {
             const btn = document.querySelector(".absolute.top-5.right-5 button");
             const dp = document.getElementById("profile-dropdown");
@@ -460,28 +590,24 @@
         // === FITUR DETEKSI JARINGAN REAL-TIME ===
         function setupMonevJaringan() {
             const el = document.getElementById("network-status");
-            
             function updateStatus() {
                 if(navigator.onLine) {
                     el.innerText = "Aktif";
                     el.className = "font-semibold text-green-400";
                 } else {
-                    el.innerText = "Of";
+                    el.innerText = "Offline";
                     el.className = "font-semibold text-red-400";
                 }
             }
-            
             updateStatus();
             window.addEventListener("online", updateStatus);
             window.addEventListener("offline", updateStatus);
         }
 
         function bukaSaluranWA() {
-            // Mengarah ke saluran whatsapp yang diinginkan
             window.open("https://whatsapp.com/channel/0029Vb6678635fLqu0pxqx2K", "_blank");
         }
 
-        // === RENDERING RIWAYAT DOWNLOAD ===
         function renderRiwayatDownload() {
             const container = document.getElementById("history-container");
             container.innerHTML = "";
@@ -514,7 +640,6 @@
             }
         }
 
-        // === FITUR DEEP LINKING (SHARE LINK) ===
         function bagikanAplikasi(appId) {
             const baseUrl = window.location.origin + window.location.pathname;
             const linkShare = `${baseUrl}?app=${appId}`;
@@ -529,15 +654,11 @@
         function cekUrlParameter() {
             const urlParams = new URLSearchParams(window.location.search);
             const appIdDariLink = urlParams.get('app');
-
             if (appIdDariLink) {
-                setTimeout(() => {
-                    openModal(appIdDariLink);
-                }, 400);
+                setTimeout(() => { openModal(appIdDariLink); }, 400);
             }
         }
 
-        // === STORE CORE FUNCTIONS ===
         function renderApps() {
             const appsContainer = document.getElementById("apps-container");
             const gamesContainer = document.getElementById("games-container");
@@ -569,7 +690,7 @@
                     </div>
                 `;
 
-                if(app.kategori === "aplikasi" || app.kategori === "game") appsContainer.innerHTML += appCardHtml;
+                                                 if(app.kategori === "aplikasi" || app.kategori === "game") appsContainer.innerHTML += appCardHtml;
                 if(app.kategori === "game") gamesContainer.innerHTML += appCardHtml;
             });
         }
@@ -593,7 +714,6 @@
             }
 
             window.open(app.driveId, '_blank');
-
             localStorage.setItem(`app_${app.id}`, JSON.stringify({
                 id: app.id, versiDownloaded: app.versi, waktu: new Date().getTime()
             }));
@@ -623,7 +743,6 @@
                 `;
             }
 
-            // Render tag label di atas tentang aplikasi
             let labelsHtml = "";
             if(app.labels) {
                 app.labels.forEach(label => {
