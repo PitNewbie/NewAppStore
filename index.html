@@ -319,70 +319,9 @@
         </nav>
     </div>
 
+    <script src ="https://nexai-space.github.io/data-newappstore/data.js"></script>
+    
     <script>
-        // === DATABASE DATA APLIKASI ===
-        const appsDatabase = [
-            {
-                id: "com.ai.neXai",
-                nama: "neXai core",
-                developer: "PitNewbie'",
-                kategori: "aplikasi",
-                icon: "logo neXai.jpg", 
-                deskripsi: "🤖 neXai core - AI Assistant Pribadi\n\nneXai core adalah asisten AI yang dirancang langsung untuk membantu.\n\n✨ Fitur Utama:\n- Chat Pintar - Tanya apa aja, dari PR sampe id konten\n- Ringan & Cepat - Optimized buat HP kentang juga lancar\n- Privasi 100% - Semua chat diproses lokal, ga ada yg nguping\n- Tanpa Iklan - Fokus ngobrol tanpa gangguan\n- gratis - chat gratis tanpa biaya\n\n💡 Cocok buat:\nPelajar, nulis caption, brainstorming, belajar bahasa, atau sekedar ngobrol.",
-                ukuran: "206 KB",
-                driveId: "https://www.mediafire.com/file/ef5leipdh8wrynh/neXai.apk/file",
-                versi: "1.2.5.2",
-                labels: ["#webview", "#ai", "#online"]
-            },
-                        {
-                id: "com.game.minecraft",
-                nama: "Minecraft",
-                developer: "Mojang Studio",
-                kategori: "game",
-                icon: "Minecraft.png", 
-                deskripsi: "Minecraft patch terbaru",
-                ukuran: "345,2 MB",
-                driveId: "https://www.mediafire.com/file/n1xjobky8vhonmf/McPatch_1.26.21_Arm64.apk/file?dkey=uvkh7j7062i&r=1587",
-                versi: "1.26.21.1",
-                // Ditambahkan label khusus sesuai request abang
-                labels: ["#rpg", "#petualangan", "#aksi", "#santai", "#bajakan"]
-            },
-                        {
-                id: "com.Orbitku.3d",
-                nama: "Orbitku - simulasi tata surya",
-                developer: "PitNewbie",
-                kategori: "game",
-                icon: "Orbitku.png", 
-                deskripsi: "Simulasi Keliling Tata surya, dan menjelajah planet, bukan",
-                ukuran: "5,2 MB",
-                driveId: "https://www.mediafire.com/file/rfbglcixvkpnoui/Orbitku.apk/file",
-                versi: "1.5.8.12",
-                // Ditambahkan label khusus sesuai request abang
-                labels: ["#webview", "#petualangan", "#simulasi", "#santai", "#pengetahuan"]
-            },
-                        {
-                id: "com.neXai.Search",
-                nama: "neXai Search",
-                developer: "PitNewbie",
-                kategori: "aplikasi",
-                icon: "neXai.png", 
-                deskripsi: "Update neXai Search v6.9.12, fix bug history\n\nBrowser ringan dengan mesin pencari khusus 'neXai search'. Temukan 1000+ website AI, tools, berita, dan lowongan langsung dari aplikasi.",
-                ukuran: "2,4 MB",
-                driveId: "https://www.mediafire.com/file/yz63jl2cxs5ehkh/nexai_v6.9.12.apk/file",
-                versi: "6.9.12",
-                // Ditambahkan label khusus sesuai request abang
-                labels: ["#offline", "#online", "#browser", "#penelusuran"]
-        }
-        ];
-
-        // 50 REKOMENDASI LABEL UNTUK FORMULIR
-        const rekomendasiLabels = [
-            "#webview", "#ai", "#online", "#offline", "#tools", "#utility", "#premium", "#mod", "#pro", "#games", 
-            "#action", "#rpg", "#simulation", "#strategy", "#casual", "#adventure", "#puzzle", "#arcade", "#anime", "#pixelart",
-            "#openworld", "#multiplayer", "#fps", "#racing", "#sports", "#horror", "#survival", "#sandbox", "#education", "#productivity",
-            "#social", "#entertainment", "#photography", "#videoeditor", "#music", "#downloader", "#automation", "#finance", "#lifestyle", "#customization",
-            "#launcher", "#widget", "#iconpack", "#root", "#noboot", "#lightweight", "#fast", "#secure", "#adfree", "#free"
-        ];
                                 
         document.addEventListener("DOMContentLoaded", () => {
             periksaSesiAkun();
