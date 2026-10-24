@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NewAppStore - Download App</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Google Sans',sans-serif}
+body{background:#f8f9fa;color:#202124}
+.header{background:white;padding:14px 20px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,0.1);position:sticky;top:0;z-index:10}
+.header img{width:32px;height:32px;border-radius:8px}
+.header b{font-size:18px;color:#1a73e8}
+.container{max-width:900px;margin:20px auto;padding:0 16px}
+#updateBanner{display:none;background:#e6f4ea;border:1px solid #ceead6;color:#137333;padding:12px 16px;border-radius:12px;margin-bottom:16px;align-items:center;gap:8px;font-size:14px;font-weight:500}
+.card{background:white;border-radius:16px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,0.1);display:flex;gap:20px;flex-wrap:wrap}
+.app-icon{width:96px;height:96px;border-radius:20px;box-shadow:0 4px 12px rgba(26,115,232,0.3)}
+.info{flex:1;min-width:250px}
+.info h1{font-size:28px;margin-bottom:6px}
+.dev{color:#1a73e8;font-size:14px;font-weight:500;margin-bottom:12px}
+.verified{display:inline-flex;align-items:center;gap:6px;background:#e6f4ea;color:#137333;padding:6px 12px;border-radius:20px;font-size:13px;font-weight:500;margin-bottom:16px}
+.desc{color:#5f6368;font-size:14px;line-height:1.5;margin-bottom:20px}
+.actions{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.btn-primary{background:#1a73e8;color:white;padding:12px 28px;border-radius:24px;text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:10px;transition:0.2s;cursor:pointer;border:none;font-size:15px}
+.btn-primary:disabled{opacity:0.7}
+.btn-primary:hover:not(:disabled){background:#1557b0;transform:translateY(-1px)}
+.progress-wrap{display:flex;flex-direction:column;gap:4px;min-width:220px}
+.progress-bar-bg{width:100%;height:8px;background:#e8eaed;border-radius:10px;overflow:hidden;display:none}
+.progress-bar-fill{width:0%;height:100%;background:#1a73e8;transition:width 0.15s linear}
+@keyframes spin{to{transform:rotate(360deg)}}
+.meta{margin-top:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px}
+.meta-box{background:white;border-radius:12px;padding:16px;text-align:center}
+.meta-box b{display:block;font-size:16px}
+.meta-box span{font-size:12px;color:#5f6368}
+.screenshot{margin-top:24px;background:white;border-radius:16px;padding:20px}
+.screenshot h3{margin-bottom:12px}
+.shot{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory}
+.shot img{min-width:180px;width:180px;height:380px;object-fit:cover;border-radius:16px;border:1px solid #e8eaed;box-shadow:0 2px 8px rgba(0,0,0,0.1);scroll-snap-align:start;background:#f1f3f4}
+.footer{text-align:center;padding:30px;color:#80868b;font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="header">
+<img src="https://store.starpit.my.id/icon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/888/888879.png'">
+<b>NewAppStore</b>
+</div>
+
+<div class="container">
+  <div id="updateBanner">🔔 Update baru tersedia! Fitur offline & perbaikan download.</div>
+
+  <div class="card">
+    <img class="app-icon" src="https://6abf4d6f48813dd42f7635cf.imgix.net/sandbox/IMG-20261011-WA3583.jpg?" onerror="this.src='https://6abf4d6f48813dd42f7635cf.imgix.net/sandbox/IMG-20261011-WA3583.jpg?'" alt="icon">
+    <div class="info">
+      <h1>NewAppStore</h1>
+      <div class="dev">Starpit Dev • App Store Lokal</div>
+      <div class="verified">✓ Verified by Play Protect • Aman</div>
+      <div class="desc">
+        Alternatif Play Store buatan Indonesia. Upload gratis, ACC cepat, support link MediaFire & Direct APK. Dibuat untuk developer lokal.
+      </div>
+      
+      <div class="actions">
+        <button id="downloadBtn" class="btn-primary" onclick="handleDownload()">
+          <span id="btnIcon">⬇</span>
+          <span id="btnText">Download APK - 18 MB</span>
+        </button>
+        <div class="progress-wrap">
+          <span id="statusText" style="font-size:12px;color:#5f6368">Versi 2.5 • Update 24 Okt 2026</span>
+          <div id="progressBarWrap" class="progress-bar-bg">
+            <div id="progressBar" class="progress-bar-fill"></div>
+          </div>
+          <span id="percentText" style="display:none;font-size:13px;color:#1a73e8;font-weight:700">0%</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="screenshot">
+    <h3>Cuplikan Aplikasi</h3>
+    <div class="shot">
+      <img src="ss1.jpg" onerror="this.src='https://via.placeholder.com/180x380?text=Home'" alt="ss1">
+      <img src="ss2.jpg" onerror="this.src='https://via.placeholder.com/180x380?text=App+List'" alt="ss2">
+      <img src="ss3.jpg" onerror="this.src='https://via.placeholder.com/180x380?text=Detail'" alt="ss3">
+      <img src="ss4.jpg" onerror="this.src='https://via.placeholder.com/180x380?text=Download'" alt="ss4">
+    </div>
+  </div>
+</div>
+
+<div class="footer">© 2026 NewAppStore by Starpit.my.id</div>
+
+<script>
+// --- SETTING GANTI TIAP UPDATE ---
+const CURRENT_VERSION = "3.5";
+const CURRENT_CODE = 35;
+const APK_FILE = "NewAppStore.apk";
+// ---------------------------------
+
+const btn = document.getElementById('downloadBtn');
+const btnText = document.getElementById('btnText');
+const btnIcon = document.getElementById('btnIcon');
+const barWrap = document.getElementById('progressBarWrap');
+const bar = document.getElementById('progressBar');
+const percentText = document.getElementById('percentText');
+const statusText = document.getElementById('statusText');
+const banner = document.getElementById('updateBanner');
+
+function checkVersion(){
+  const savedCode = localStorage.getItem('newappstore_code');
+  const savedVer = localStorage.getItem('newappstore_version');
+  if(!savedCode){
+    btnText.innerText = "Download APK - 18 MB";
+  } else if(parseInt(savedCode) < CURRENT_CODE){
+    btnText.innerText = `Update ke v${CURRENT_VERSION}`;
+    btn.style.background = "#137333";
+    banner.style.display = "flex";
+    banner.innerText = `🔔 Update tersedia! Kamu di v${savedVer}, terbaru v${CURRENT_VERSION}`;
+    statusText.innerHTML = `Kamu punya v${savedVer} • <b style='color:#137333'>Update tersedia</b>`;
+  } else {
+    btnText.innerText = "✓ Terbaru Terpasang";
+    btn.style.background = "#5f6368";
+    statusText.innerText = `Kamu sudah pakai v${CURRENT_VERSION}`;
+  }
+}
+
+async function handleDownload(){
+  btn.disabled = true;
+  btnIcon.innerHTML = `<div style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;display:inline-block;animation:spin 0.8s linear infinite"></div>`;
+  barWrap.style.display = "block";
+  percentText.style.display = "block";
+
+  try{
+    const res = await fetch(APK_FILE);
+    if(!res.ok) throw new Error("File tidak ditemukan");
+    
+    const total = parseInt(res.headers.get('content-length') || 0, 10);
+    const reader = res.body.getReader();
+    let loaded = 0;
+    const chunks = [];
+
+    while(true){
+      const {done, value} = await reader.read();
+      if(done) break;
+      chunks.push(value);
+      loaded += value.length;
+      
+      // INI YANG BIKIN 0% - 100% NGIKUTIN DOWNLOAD BENERAN
+      let percent = total ? Math.round((loaded/total)*100) : 0;
+      bar.style.width = percent + "%";
+      percentText.innerText = percent + "%";
+      btnText.innerText = `Mengunduh... ${percent}%`;
+      statusText.innerText = `${(loaded/1024/1024).toFixed(1)} MB ${total ? `/ ${(total/1024/1024).toFixed(1)} MB` : ''}`;
+    }
+
+    // Pas 100% baru selesai & langsung save
+    const blob = new Blob(chunks);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = APK_FILE;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    // Simpen memori
+    localStorage.setItem('newappstore_version', CURRENT_VERSION);
+    localStorage.setItem('newappstore_code', CURRENT_CODE);
+    
+    btnIcon.innerText = "✓";
+    btnText.innerText = "Selesai - 100%";
+    percentText.innerText = "100% - Selesai, cek notifikasi download";
+    statusText.innerText = "Download selesai!";
+    bar.style.width = "100%";
+
+    setTimeout(()=>{ btn.disabled=false; checkVersion(); btnIcon.innerText="⬇"; barWrap.style.display="none"; percentText.style.display="none"; }, 3000);
+
+  }catch(err){
+    alert("Gagal: " + err.message + "\nPastikan file NewAppStore.apk ada di folder yang sama.");
+    btn.disabled = false;
+    btnIcon.innerText = "⬇";
+    btnText.innerText = "Coba Lagi";
+    barWrap.style.display="none";
+    percentText.style.display="none";
+  }
+}
+window.onload = checkVersion;
+</script>
+</body>
+</html>
